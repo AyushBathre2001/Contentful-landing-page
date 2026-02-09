@@ -93,12 +93,13 @@ export default function Header({
          - h-0: Takes up no vertical space so Hero starts immediately appropriately
          - z-40: Below AnnouncementBar (z-50) but above Hero (z-10)
       */}
-      <header className="sticky top-0 z-40 w-full h-0 pointer-events-none">
+      <header className="sticky top-0 z-40 w-full">
         <div className="absolute top-0 w-full">
           <div className="mx-auto flex items-center justify-between gap-3 px-6 py-6 md:py-6 bg-transparent max-w-[1440px]">
+            {/* Desktop Navigation */}
             <NavigationMenu className="hidden w-full flex-1 lg:flex justify-between items-start gap-4 max-w-none bg-transparent!">
               {/* LEFT FLOATING CARD */}
-              <NavigationMenuList className="gap-6 px-6 h-[72px] bg-white rounded-xl shadow-lg pointer-events-auto items-center">
+              <NavigationMenuList className="gap-6 px-6 h-[72px] bg-white rounded-xl shadow-lg items-center">
                 <NavigationMenuItem className="pointer-events-auto mr-4">
                   <NavigationMenuLink asChild>
                     <Link href="/" className="flex items-center">
@@ -120,7 +121,7 @@ export default function Header({
               </NavigationMenuList>
 
               {/* RIGHT FLOATING CARD */}
-              <NavigationMenuList className="gap-8 px-6 h-[72px] bg-white rounded-xl shadow-lg pointer-events-auto items-center">
+              <NavigationMenuList className="gap-8 px-6 h-[72px] bg-white rounded-xl shadow-lg items-center">
                 <NavItems items={rightNavItems} />
 
                 {headerFields.ctaButton && (
@@ -146,9 +147,28 @@ export default function Header({
               </NavigationMenuList>
             </NavigationMenu>
 
-            {/* Mobile menu */}
-            <div className="lg:hidden pointer-events-auto bg-white rounded-full p-2 shadow-lg">
-              <MobileMenu data={data} />
+            {/* Mobile Header */}
+            <div className="lg:hidden w-full flex items-center justify-between bg-white rounded-xl shadow-lg px-4 py-3">
+              {/* Logo */}
+              <Link href="/" className="flex items-center">
+                {logoSrc && (
+                  <Image
+                    src={logoSrc}
+                    alt={logoAlt}
+                    width={120}
+                    height={40}
+                    className="h-8 w-auto object-contain"
+                    priority
+                  />
+                )}
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <MobileMenu
+                data={data}
+                leftNav={leftNavItems}
+                rightNav={rightNavItems}
+              />
             </div>
           </div>
         </div>
@@ -229,15 +249,23 @@ const NavItems = ({ items }: { items: Entry<EntrySkeletonType>[] }) => {
   );
 };
 
-function MobileMenu({ data }: { data: Entry<EntrySkeletonType> }) {
+function MobileMenu({
+  data,
+  leftNav,
+  rightNav,
+}: {
+  data: Entry<EntrySkeletonType>;
+  leftNav: Entry<EntrySkeletonType>[];
+  rightNav: Entry<EntrySkeletonType>[];
+}) {
   const headerFields = data.fields as {
     logo?: Asset;
-    navItems?: Entry<EntrySkeletonType>[];
     ctaButton?: Entry<EntrySkeletonType>;
   };
 
   const logoSrc = getImageUrl(headerFields.logo);
   const logoAlt = (headerFields.logo?.fields?.title as string) || "Logo";
+  const allNavItems = [...leftNav, ...rightNav];
 
   return (
     <Sheet>
@@ -255,6 +283,7 @@ function MobileMenu({ data }: { data: Entry<EntrySkeletonType> }) {
       <SheetContent side="left" className="w-[300px] bg-white text-black p-6">
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <div className="mt-4 space-y-8">
+          {/* Logo */}
           <Link href="/" className="flex items-center">
             {logoSrc && (
               <Image
@@ -266,9 +295,70 @@ function MobileMenu({ data }: { data: Entry<EntrySkeletonType> }) {
               />
             )}
           </Link>
-          <div className="text-sm text-gray-500">
-            Menu items available on desktop
-          </div>
+
+          {/* Navigation Items */}
+          <nav className="flex flex-col space-y-4">
+            {allNavItems.map((item, idx) => {
+              const fields = item.fields as NavItemFields;
+
+              if (!isDropdown(item)) {
+                const { href, label, isExternal } =
+                  getContentfulLinkDetails(item);
+                return (
+                  <Link
+                    key={item.sys.id || idx}
+                    href={href}
+                    className="text-base font-bold text-[#0F0F0F] hover:text-gray-600 transition-colors py-2"
+                    {...(isExternal
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    {label}
+                  </Link>
+                );
+              } else {
+                return (
+                  <div key={item.sys.id || idx} className="space-y-2">
+                    <div className="text-base font-bold text-[#0F0F0F] py-2">
+                      {fields.title || fields.label || "Menu"}
+                    </div>
+                    <div className="pl-4 space-y-2">
+                      {fields.links?.map((subItem, subIdx) => {
+                        const subLink = getContentfulLinkDetails(subItem);
+                        return (
+                          <Link
+                            key={subItem.sys.id || subIdx}
+                            href={subLink.href}
+                            className="block text-sm text-gray-600 hover:text-black transition-colors py-1"
+                            target={subLink.isExternal ? "_blank" : undefined}
+                          >
+                            {subLink.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+            })}
+          </nav>
+
+          {/* CTA Button */}
+          {headerFields.ctaButton && (
+            <Button
+              asChild
+              className="w-full bg-[#2D0F05] text-white hover:bg-black font-bold text-base px-6 py-3 rounded-lg"
+            >
+              <Link
+                href={
+                  (headerFields.ctaButton.fields as { url?: string }).url || "#"
+                }
+              >
+                {(headerFields.ctaButton.fields as { text?: string }).text ||
+                  "Get Started"}
+              </Link>
+            </Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>

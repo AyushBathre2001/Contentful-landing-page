@@ -30,28 +30,28 @@ export default function HighlightSection({ data }: HighlightSectionProps) {
   const illustrationUrl = getImageUrl(illustration);
 
   return (
-    <LayoutWrapper className="py-24 max-w-[1520px] mx-auto">
-      <section className="space-y-19">
+    <LayoutWrapper className="py-12 md:py-16 lg:py-24 max-w-[1520px] mx-auto">
+      <section className="space-y-12 md:space-y-16 lg:space-y-19">
         {/* 1. Header (Title & Description) */}
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3 md:gap-4">
           {title && (
-            <h2 className="flex flex-col items-center text-center gap-4 font-helvetica-neue font-bold text-6xl leading-15 tracking-[-3.84px] max-w-3xl">
+            <h2 className="flex flex-col items-center text-center gap-2 md:gap-4 font-helvetica-neue font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight md:leading-15 tracking-tight md:tracking-[-3.84px] max-w-3xl px-4">
               {title}
             </h2>
           )}
           {description && (
-            <p className="max-w-lg text-center font-helvetica-neue font-normal text-xl tracking-[-0.5px]">
+            <p className="max-w-lg text-center font-helvetica-neue font-normal text-base sm:text-lg md:text-xl tracking-tight md:tracking-[-0.5px] px-4">
               {description}
             </p>
           )}
         </div>
 
         {/* 2. Main Content Split */}
-        <div className="relative flex gap-4">
+        <div className="relative flex flex-col lg:flex-row gap-8 lg:gap-4">
           {/* Left Column: Text & CTA */}
-          <div className="flex-1 flex flex-col gap-10 md:pb-44">
+          <div className="flex-1 flex flex-col gap-6 md:gap-8 lg:gap-10 md:pb-0 lg:pb-44 px-4 md:px-0">
             <div className="flex-1 flex flex-col gap-4">
-              <div className="font-helvetica-neue text-2xl font-normal leading-7.5 tracking-[-1px] flex flex-col gap-6 text-[#888888]">
+              <div className="font-helvetica-neue text-lg sm:text-xl md:text-2xl font-normal leading-relaxed md:leading-7.5 tracking-tight md:tracking-[-1px] flex flex-col gap-4 md:gap-6 text-[#888888]">
                 {mainContent &&
                   (mainContent as any).content?.map(
                     (node: any, idx: number) => {
@@ -94,7 +94,7 @@ export default function HighlightSection({ data }: HighlightSectionProps) {
                       variant={
                         variant === "secondary" ? "secondary" : "default"
                       }
-                      className="font-bold"
+                      className="font-bold w-full sm:w-auto"
                       asChild
                     >
                       <Link href={url || "#"}>{text}</Link>
@@ -106,10 +106,10 @@ export default function HighlightSection({ data }: HighlightSectionProps) {
           </div>
 
           {/* Right Column: Illustration */}
-          <div className="absolute -bottom-24 w-full h-full -z-10 blur-xl lg:relative lg:bottom-0 lg:z-0 lg:blur-none lg:h-auto flex-1 flex">
+          <div className="relative w-full h-64 sm:h-80 md:h-96 lg:absolute lg:-bottom-24 lg:w-full lg:h-full lg:-z-10 lg:blur-xl xl:relative xl:bottom-0 xl:z-0 xl:blur-none xl:h-auto flex-1 flex px-4 md:px-0">
             {illustrationUrl && (
               <div className="flex justify-center lg:justify-end w-full">
-                <div className="relative w-full h-full min-h-100">
+                <div className="relative w-full h-full lg:min-h-100">
                   <Image
                     src={illustrationUrl}
                     alt={
@@ -118,7 +118,7 @@ export default function HighlightSection({ data }: HighlightSectionProps) {
                       "Illustration"
                     }
                     fill
-                    className="object-contain object-bottom-right"
+                    className="object-contain object-center lg:object-bottom-right"
                   />
                 </div>
               </div>

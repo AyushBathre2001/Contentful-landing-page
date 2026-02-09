@@ -96,9 +96,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Feature Carousel (if any) - could be positioned absolutely or below */}
       {featureCarousel && (
-        <div className="hidden">
-          {" "}
-          {/* Hiding for now based on strict design adherence, unless requested to show */}
+        <div className="md:mt-24 mt-10">
           <FeatureCarousel data={featureCarousel} />
         </div>
       )}
