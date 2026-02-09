@@ -4,9 +4,15 @@ import { createClient, Asset, Entry, EntrySkeletonType } from "contentful";
 const spaceId = process.env.CONTENTFUL_SPACE_ID;
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
 
+if (!spaceId || !accessToken) {
+  throw new Error(
+    "Missing required Contentful environment variables: CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN",
+  );
+}
+
 const client = createClient({
-  space: "c0qpct7232jw",
-  accessToken: "JC9FL0YcDs1Gyno2ykMTQ4Yg20aPYff9p4EDYiZ6gJY",
+  space: spaceId,
+  accessToken: accessToken,
 });
 
 // =============================================================================
