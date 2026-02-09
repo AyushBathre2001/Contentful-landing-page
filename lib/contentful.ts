@@ -1,14 +1,8 @@
 import { createClient, Asset, Entry, EntrySkeletonType } from "contentful";
 
-// Validate environment variables
-const spaceId = process.env.CONTENTFUL_SPACE_ID;
-const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
-
-if (!spaceId || !accessToken) {
-  throw new Error(
-    "Missing required Contentful environment variables: CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN",
-  );
-}
+// Use environment variables with fallback to hardcoded values for production
+const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || "";
+const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || "";
 
 const client = createClient({
   space: spaceId,
